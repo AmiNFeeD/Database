@@ -1,0 +1,90 @@
+anfd@ANFD-Pro ~ % psql -U anfd -d postgres
+psql (14.19 (Homebrew))
+Type "help" for help.
+
+postgres=# CREATE TABLE students (
+postgres(# id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL
+);
+CREATE TABLE
+postgres=# INSERT INTO students (name, email)
+VALUES                
+('arch', 'arch@example.com'),
+('kk', 'kk@example.com'),
+('anfd', 'anfd@example.com');
+INSERT 0 3
+INSERT 0 3
+postgres-# SELECT * FROM students;
+ERROR:  syntax error at or near "0"
+LINE 1: INSERT 0 3
+               ^
+postgres=# 
+postgres=# INSERT INTO students (name, email)
+VALUES
+('arch', 'arch@example.com'),
+('kk', 'kk@example.com'),
+('anfd', 'anfd@example.com');
+INSERT 0 3
+postgres=# SELECT * FROM students;
+ id | name |      email       
+----+------+------------------
+  1 | arch | arch@example.com
+  2 | kk   | kk@example.com
+  3 | anfd | anfd@example.com
+  4 | arch | arch@example.com
+  5 | kk   | kk@example.com
+  6 | anfd | anfd@example.com
+(6 rows)
+
+postgres=#  SELECT name, email FROM students WHERE name = 'arch';
+ name |      email       
+------+------------------
+ arch | arch@example.com
+ arch | arch@example.com
+(2 rows)
+
+postgres=# SELECT name, email FROM students ORDER BY name;
+ name |      email       
+------+------------------
+ anfd | anfd@example.com
+ anfd | anfd@example.com
+ arch | arch@example.com
+ arch | arch@example.com
+ kk   | kk@example.com
+ kk   | kk@example.com
+(6 rows)
+
+postgres=# SELECT name, email FROM students ORDER BY email;
+ name |      email       
+------+------------------
+ anfd | anfd@example.com
+ anfd | anfd@example.com
+ arch | arch@example.com
+ arch | arch@example.com
+ kk   | kk@example.com
+ kk   | kk@example.com
+(6 rows)
+
+postgres=# SELECT name, email FROM students LIMIT 2;
+ name |      email       
+------+------------------
+ arch | arch@example.com
+ kk   | kk@example.com
+(2 rows)
+
+postgres=# SELECT name, email FROM students LIMIT 1;
+ name |      email       
+------+------------------
+ arch | arch@example.com
+(1 row)
+
+postgres=# SELECT name, email FROM students LIMIT 3;
+ name |      email       
+------+------------------
+ arch | arch@example.com
+ kk   | kk@example.com
+ anfd | anfd@example.com
+(3 rows)
+
+postgres=# 
