@@ -1,0 +1,20 @@
+anfd@ANFD-Pro Database % psql -U anfd -d postgres
+psql (14.19 (Homebrew))
+Type "help" for help.
+
+postgres=# CREATE DATABASE test;
+CREATE DATABASE
+postgres=# CREATE DATABASE testych;
+CREATE DATABASE
+postgres=# DROP DATABASE testych;
+DROP DATABASE
+postgres=# \c test;
+You are now connected to database "test" as user "anfd".
+test=# \c postgres
+You are now connected to database "postgres" as user "anfd".
+postgres=# DROP DATABASE test;
+DROP DATABASE
+postgres=# \q
+anfd@ANFD-Pro Database % 
+
+
