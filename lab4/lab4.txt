@@ -1,0 +1,46 @@
+anfd@ANFD-Pro lab4 % psql -U anfd -d postgres
+psql (14.19 (Homebrew))
+Type "help" for help.
+
+postgres=# DROP TABLE students;
+ERROR:  table "students" does not exist
+postgres=# CREATE TABLE students (
+postgres(# student_id SERIAL PRIMARY KEY,
+postgres(# first_name TEXT NOT NULL,
+postgres(# last_name TEXT NOT NULL,
+postgres(# email TEXT UNIQUE NOT NULL,
+postgres(# department VARCHAR(7)
+postgres(# );
+CREATE TABLE
+postgres=# ALTER TABLE students
+postgres-# ADD COLUMN birth_date DATE;
+ALTER TABLE
+postgres=# ALTER TABLE students
+postgres-# DROP COLUMN birth_date;
+ALTER TABLE
+postgres=# ALTER TABLE students
+postgres-# ALTER COLUMN first_name TYPE VARCHAR(50);
+ALTER TABLE
+postgres=# ALTER TABLE students
+postgres-# ADD CONSTRAINT unique_student_email UNIQUE (email);
+ALTER TABLE
+postgres=# ALTER TABLE students
+postgres-# RENAME COLUMN email TO email_address;
+ALTER TABLE
+postgres=# ALTER TABLE students
+postgres-# RENAME TO university_students;
+ALTER TABLE
+postgres=# DROP TABLE university_students;
+DROP TABLE
+postgres=# CREATE TEMP TABLE temp_students (
+postgres(# student_id SERIAL PRIMARY KEY
+postgres(# );
+CREATE TABLE
+postgres=# \q
+anfd@ANFD-Pro lab4 % psql -U anfd -d postgres
+psql (14.19 (Homebrew))
+Type "help" for help.
+
+postgres=# \dt
+Did not find any relations.
+postgres=# 
