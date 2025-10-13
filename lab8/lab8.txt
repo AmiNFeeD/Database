@@ -1,0 +1,42 @@
+anfd@ANFD-Pro lab8 % psql -U anfd -d postgres
+psql (14.19 (Homebrew))
+Type "help" for help.
+
+postgres=# \dt
+              List of relations
+ Schema |        Name         | Type  | Owner 
+--------+---------------------+-------+-------
+ public | authors             | table | anfd
+ public | book_authors        | table | anfd
+ public | books               | table | anfd
+ public | courses             | table | anfd
+ public | departments         | table | anfd
+ public | employees           | table | anfd
+ public | loans               | table | anfd
+ public | members             | table | anfd
+ public | student_enrollments | table | anfd
+ public | students            | table | anfd
+ public | transactions        | table | anfd
+ public | user_profiles       | table | anfd
+ public | users               | table | anfd
+(13 rows)
+
+postgres=# \d books
+                                           Table "public.books"
+      Column      |          Type          | Collation | Nullable |                Default                 
+------------------+------------------------+-----------+----------+----------------------------------------
+ book_id          | integer                |           | not null | nextval('books_book_id_seq'::regclass)
+ title            | character varying(200) |           | not null | 
+ isbn             | character varying(13)  |           |          | 
+ publication_year | integer                |           |          | 
+ available_copies | integer                |           |          | 1
+Indexes:
+    "books_pkey" PRIMARY KEY, btree (book_id)
+    "books_isbn_key" UNIQUE CONSTRAINT, btree (isbn)
+Referenced by:
+    TABLE "book_authors" CONSTRAINT "book_authors_book_id_fkey" FOREIGN KEY (book_id) REFERENCES books(book_id)
+    TABLE "loans" CONSTRAINT "loans_book_id_fkey" FOREIGN KEY (book_id) REFERENCES books(book_id)
+
+(END)
+
+
