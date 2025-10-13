@@ -1,0 +1,119 @@
+anfd@ANFD-Pro lab10 % psql -U anfd -d postgres
+psql (14.19 (Homebrew))
+Type "help" for help.
+
+postgres=# INSERT INTO Students (first_name, last_name, birth_date) VALUES
+postgres-# ('Aibek', 'Sharshenov', '2002-05-12'),
+postgres-# ('Ainura', 'Toktomamatova', '2001-09-23'),
+postgres-# ('Bakyt', 'Mamatov', '2003-01-15'),
+postgres-# ('Gulzat', 'Sultanova', '2002-07-30'),
+postgres-# ('Tilek', 'Usubaliev', '2001-11-05');
+INSERT 0 5
+postgres=# CREATE TABLE Courses (
+postgres(# course_id SERIAL PRIMARY KEY,
+postgres(# course_name VARCHAR(100),
+postgres(# credits INTEGER
+postgres(# );
+CREATE TABLE
+postgres=# INSERT INTO Courses (course_name, credits) VALUES
+postgres-# ('Database Design', 4),
+postgres-# ('Programming I', 3),
+postgres-# ('Calculus I', 4),
+postgres-# ('Introduction to Security', 3);
+INSERT 0 4
+postgres=# SELECT *
+postgres-# FROM Students;
+ student_id | first_name |   last_name   | birth_date 
+------------+------------+---------------+------------
+          5 | Aibek      | Sharshenov    | 2002-05-12
+          6 | Ainura     | Toktomamatova | 2001-09-23
+          7 | Bakyt      | Mamatov       | 2003-01-15
+          8 | Gulzat     | Sultanova     | 2002-07-30
+          9 | Tilek      | Usubaliev     | 2001-11-05
+(5 rows)
+
+postgres=# SELECT first_name, last_name AS surname
+postgres-# FROM Students;
+ first_name |    surname    
+------------+---------------
+ Aibek      | Sharshenov
+ Ainura     | Toktomamatova
+ Bakyt      | Mamatov
+ Gulzat     | Sultanova
+ Tilek      | Usubaliev
+(5 rows)
+
+postgres=# SELECT course_name, credits
+postgres-# FROM Courses
+postgres-# WHERE credits > 3;
+   course_name   | credits 
+-----------------+---------
+ Database Design |       4
+ Calculus I      |       4
+(2 rows)
+
+postgres=# SELECT first_name, last_name, birth_date
+postgres-# FROM Students
+postgres-# WHERE birth_date BETWEEN '2002-01-01' AND '2003-12-31';
+ first_name | last_name  | birth_date 
+------------+------------+------------
+ Aibek      | Sharshenov | 2002-05-12
+ Bakyt      | Mamatov    | 2003-01-15
+ Gulzat     | Sultanova  | 2002-07-30
+(3 rows)
+
+postgres=# SELECT first_name
+postgres-# FROM Students
+postgres-# WHERE first_name LIKE 'A%';
+ first_name 
+------------
+ Aibek
+ Ainura
+(2 rows)
+
+postgres=# SELECT course_name
+postgres-# FROM Courses
+postgres-# WHERE credits IN (3, 4);
+       course_name        
+--------------------------
+ Database Design
+ Programming I
+ Calculus I
+ Introduction to Security
+(4 rows)
+
+postgres=# SELECT *
+postgres-# FROM Students
+postgres-# ORDER BY last_name ASC, first_name DESC;
+ student_id | first_name |   last_name   | birth_date 
+------------+------------+---------------+------------
+          7 | Bakyt      | Mamatov       | 2003-01-15
+          5 | Aibek      | Sharshenov    | 2002-05-12
+          8 | Gulzat     | Sultanova     | 2002-07-30
+          6 | Ainura     | Toktomamatova | 2001-09-23
+          9 | Tilek      | Usubaliev     | 2001-11-05
+(5 rows)
+
+postgres=# SELECT first_name, birth_date
+postgres-# FROM Students
+postgres-# ORDER BY birth_date ASC
+postgres-# LIMIT 3;
+ first_name | birth_date 
+------------+------------
+ Ainura     | 2001-09-23
+ Tilek      | 2001-11-05
+ Aibek      | 2002-05-12
+(3 rows)
+
+postgres=# SELECT first_name, last_name
+postgres-# FROM Students
+postgres-# WHERE birth_date > '2002-12-31'
+postgres-# ORDER BY last_name ASC
+postgres-# LIMIT 2;
+ first_name | last_name 
+------------+-----------
+ Bakyt      | Mamatov
+(1 row)
+
+postgres=# \q
+anfd@ANFD-Pro lab10 % 
