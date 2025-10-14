@@ -1,0 +1,56 @@
+anfd@ANFD-Pro lab14 % psql -U anfd -d postgres      
+psql (14.19 (Homebrew))
+Type "help" for help.
+
+postgres=# DROP TABLE IF EXISTS accounts;
+NOTICE:  table "accounts" does not exist, skipping
+DROP TABLE
+postgres=# CREATE TABLE accounts (
+postgres(# account_id SERIAL PRIMARY KEY,
+postgres(# account_holder VARCHAR(100) NOT NULL,
+postgres(# balance DECIMAL(10, 2) NOT NULL DEFAULT 0.00
+postgres(# );
+CREATE TABLE
+postgres=# INSERT INTO accounts (account_holder, balance) VALUES
+postgres-# ('Aibek Sharshenov', 1000.00),
+postgres-# ('Daniyar Askarov', 500.00); 
+INSERT 0 2
+postgres=# SELECT * FROM accounts;
+ account_id |  account_holder  | balance 
+------------+------------------+---------
+          1 | Aibek Sharshenov | 1000.00
+          2 | Daniyar Askarov  |  500.00
+(2 rows)
+
+postgres=# BEGIN;
+BEGIN
+postgres=*# UPDATE accounts SET balance = balance - 200.00 WHERE account_id = 1;
+UPDATE 1
+postgres=*# UPDATE accounts SET balance = balance + 200.00 WHERE account_id = 2;
+UPDATE 1
+postgres=*# COMMIT;
+COMMIT
+postgres=# SELECT * FROM accounts WHERE account_id IN (1, 2);
+ account_id |  account_holder  | balance 
+------------+------------------+---------
+          1 | Aibek Sharshenov |  800.00
+          2 | Daniyar Askarov  |  700.00
+(2 rows)
+
+postgres=# BEGIN;
+BEGIN
+postgres=*# UPDATE accounts SET balance = balance - 300.00 WHERE account_id = 1;
+UPDATE 1
+postgres=*# INSERT INTO accounts (account_holder, balance) VALUES (NULL, 100.00);
+ERROR:  null value in column "account_holder" of relation "accounts" violates not-null constraint
+DETAIL:  Failing row contains (3, null, 100.00).
+postgres=!# ROLLBACK;
+ROLLBACK
+postgres=# SELECT * FROM accounts WHERE account_id IN (1, 2);
+ account_id |  account_holder  | balance 
+------------+------------------+---------
+          1 | Aibek Sharshenov |  800.00
+          2 | Daniyar Askarov  |  700.00
+(2 rows)
+
+postgres=# 
