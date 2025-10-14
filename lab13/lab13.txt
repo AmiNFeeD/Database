@@ -1,0 +1,84 @@
+anfd@ANFD-Pro lab13 % psql -U anfd -d postgres
+psql (14.19 (Homebrew))
+Type "help" for help.
+
+postgres=# SELECT credits FROM courses WHERE course_name = 'Database Fundamentals'
+postgres-# SELECT course_name, credits
+postgres-# FROM courses
+postgres-# WHERE credits = (
+postgres(# SELECT credits 
+postgres(# FROM courses 
+postgres(# WHERE course_name = 'Database Fundamentals'
+postgres(# );
+ERROR:  syntax error at or near "SELECT"
+LINE 3: SELECT course_name, credits
+        ^
+postgres=# SELECT course_name, credits
+postgres-# FROM courses
+postgres-# WHERE credits = (
+postgres(# SELECT credits
+postgres(# FROM courses
+postgres(# WHERE course_name = 'Database Fundamentals'
+postgres(# );
+      course_name      | credits 
+-----------------------+---------
+ Database Fundamentals |       4
+ Web Development       |       4
+(2 rows)
+
+postgres=# SELECT first_name, last_name
+postgres-# FROM students
+postgres-# WHERE student_id IN (
+postgres(# SELECT student_id
+postgres(# FROM student_enrollments se
+postgres(# JOIN courses c ON se.course_id = c.course_id
+postgres(# WHERE c.credits = 4
+postgres(# );
+ first_name | last_name 
+------------+-----------
+ Aizhan     | Bekova
+ Rustam     | Sydykov
+ Tilek      | Usonov
+(3 rows)
+
+postgres=# WITH course_enrollment_counts AS (
+postgres(# SELECT
+postgres(# course_id,
+postgres(# COUNT(student_id) AS enrollment_count
+postgres(# FROM student_enrollments
+postgres(# GROUP BY course_id
+postgres(# )
+postgres-# SELECT
+postgres-# c.course_name,
+postgres-# cec.enrollment_count
+postgres-# FROM courses c
+postgres-# JOIN course_enrollment_counts cec ON c.course_id = cec.course_id
+postgres-# WHERE cec.enrollment_count > (
+postgres(# SELECT AVG(enrollment_count) 
+postgres(# FROM course_enrollment_counts
+postgres(# )
+postgres-# ORDER BY cec.enrollment_count DESC;
+      course_name      | enrollment_count 
+-----------------------+------------------
+ Database Fundamentals |                3
+(1 row)
+
+postgres=# SELECT
+postgres-# first_name,
+postgres-# last_name
+postgres-# FROM students s
+postgres-# WHERE EXISTS (
+postgres(# SELECT 1 
+postgres(# FROM student_enrollments se
+postgres(# WHERE se.student_id = s.student_id
+postgres(# );
+ first_name |  last_name  
+------------+-------------
+ Aizhan     | Bekova
+ Daniyar    | Askarov
+ Tilek      | Usonov
+ Gulnur     | Zhorobekova
+ Rustam     | Sydykov
+(5 rows)
+
+postgres=# \q
