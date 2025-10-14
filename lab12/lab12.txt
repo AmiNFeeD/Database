@@ -1,0 +1,71 @@
+anfd@ANFD-Pro lab12 % psql -U anfd -d postgres
+psql (14.19 (Homebrew))
+Type "help" for help.
+
+postgres=# SELECT
+postgres-# s.first_name,
+postgres-# s.last_name,
+postgres-# c.course_name
+postgres-# FROM students s
+postgres-# INNER JOIN student_enrollments se ON s.student_id = se.student_id
+postgres-# INNER JOIN courses c ON se.course_id = c.course_id
+postgres-# ORDER BY s.last_name, c.course_name;
+ first_name |  last_name  |      course_name      
+------------+-------------+-----------------------
+ Daniyar    | Askarov     | Calculus I
+ Aizhan     | Bekova      | Database Fundamentals
+ Aizhan     | Bekova      | Web Development
+ Rustam     | Sydykov     | Database Fundamentals
+ Tilek      | Usonov      | Database Fundamentals
+ Tilek      | Usonov      | Discrete Math
+ Gulnur     | Zhorobekova | Ethics in Tech
+(7 rows)
+
+postgres=# SELECT
+postgres-# s.first_name,
+postgres-# s.last_name,
+postgres-# c.course_name
+postgres-# FROM students s
+postgres-# LEFT JOIN student_enrollments se ON s.student_id = se.student_id
+postgres-# LEFT JOIN courses c ON se.course_id = c.course_id
+postgres-# ORDER BY s.last_name, c.course_name;
+ first_name |  last_name  |      course_name      
+------------+-------------+-----------------------
+ Daniyar    | Askarov     | Calculus I
+ Aizhan     | Bekova      | Database Fundamentals
+ Aizhan     | Bekova      | Web Development
+ Rustam     | Sydykov     | Database Fundamentals
+ Tilek      | Usonov      | Database Fundamentals
+ Tilek      | Usonov      | Discrete Math
+ Gulnur     | Zhorobekova | Ethics in Tech
+(7 rows)
+
+postgres=# SELECT
+postgres-# s.first_name || ' ' || s.last_name AS student_full_name,
+postgres-# c.course_name,
+postgres-# se.grade
+postgres-# FROM students s
+postgres-# INNER JOIN student_enrollments se ON s.student_id = se.student_id
+postgres-# INNER JOIN courses c ON se.course_id = c.course_id
+postgres-# ORDER BY s.last_name, c.course_name;
+ student_full_name  |      course_name      | grade 
+--------------------+-----------------------+-------
+ Daniyar Askarov    | Calculus I            | A 
+ Aizhan Bekova      | Database Fundamentals | A 
+ Aizhan Bekova      | Web Development       | B 
+ Rustam Sydykov     | Database Fundamentals | A-
+ Tilek Usonov       | Database Fundamentals | C 
+ Tilek Usonov       | Discrete Math         | B+
+ Gulnur Zhorobekova | Ethics in Tech        | A 
+(7 rows)
+
+postgres=# SELECT
+postgres-# c.course_name
+postgres-# FROM courses c
+postgres-# LEFT JOIN student_enrollments se ON c.course_id = se.course_id
+postgres-# WHERE se.enrollment_id IS NULL;
+ course_name 
+-------------
+(0 rows)
+
+postgres=# 
