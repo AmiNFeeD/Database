@@ -1,0 +1,99 @@
+anfd@ANFD-Pro lab11 % psql -U anfd -d postgres
+psql (14.19 (Homebrew))
+Type "help" for help.
+
+postgres=# CREATE TABLE students (
+postgres(# student_id SERIAL PRIMARY KEY,
+postgres(# first_name VARCHAR (50) NOT NULL,
+postgres(# last_name VARCHAR (50) NOT NULL,
+postgres(# email VARCHAR (100) UNIQUE
+postgres(# );
+CREATE TABLE
+postgres=# CREATE TABLE courses (
+postgres(# course_id SERIAL PRIMARY KEY,
+postgres(# course_name VARCHAR (100),
+postgres(# credits INTEGER
+postgres(# );
+CREATE TABLE
+postgres=# CREATE TABLE student_enrollments (
+postgres(# enrollment_id SERIAL PRIMARY KEY,
+postgres(# student_id INTEGER REFERENCES students (student_id) ON DELETE CASCADE,
+postgres(# course_id INTEGER REFERENCES courses (course_id) ON DELETE CASCADE,
+postgres(# grade CHAR (2)
+postgres(# );
+CREATE TABLE
+postgres=# INSERT INTO students (first_name, last_name, email) VALUES
+postgres-# ('Aizhan', 'Bekova', 'aizhan@mail.com'),
+postgres-# ('Daniyar', 'Askarov', 'daniyar@mail.com'),
+postgres-# ('Tilek', 'Usonov', 'tilek@mail.com'),
+postgres-# ('Gulnur', 'Zhorobekova', 'gulnur@mail.com'),
+postgres-# ('Rustam', 'Sydykov', 'rustam@mail.com');
+INSERT 0 5
+postgres=# INSERT INTO courses (course_name, credits) VALUES
+postgres-# ('Database Fundamentals', 4),
+postgres-# ('Calculus I', 3),
+postgres-# ('Discrete Math', 3),
+postgres-# ('Web Development', 4),
+postgres-# ('Ethics in Tech', 2);
+INSERT 0 5
+postgres=# INSERT INTO student_enrollments (student_id, course_id, grade) VALUES
+postgres-# (1, 1, 'A'),
+postgres-# (1, 4, 'B'),
+postgres-# (2, 2, 'A'),
+postgres-# (3, 1, 'C'),
+postgres-# (3, 3, 'B+'),
+postgres-# (4, 5, 'A'),
+postgres-# (5, 1, 'A-');
+INSERT 0 7
+postgres=# SELECT
+postgres-# COUNT(s.student_id) AS total_students,
+postgres-# SUM(c.credits) AS total_credits_offered,
+postgres-# AVG(c.credits) AS average_credits_per_course
+postgres-# FROM students s, courses c;
+ total_students | total_credits_offered | average_credits_per_course 
+----------------+-----------------------+----------------------------
+             25 |                    80 |         3.2000000000000000
+(1 row)
+
+postgres=# SELECT
+postgres-# credits,
+postgres-# COUNT(course_id) AS number_of_courses
+postgres-# FROM courses
+postgres-# GROUP BY credits
+postgres-# ORDER BY credits DESC;
+ credits | number_of_courses 
+---------+-------------------
+       4 |                 2
+       3 |                 2
+       2 |                 1
+(3 rows)
+
+postgres=# SELECT
+postgres-# c.course_name,
+postgres-# COUNT(se.student_id) AS enrolled_students_count
+postgres-# FROM courses c
+postgres-# JOIN student_enrollments se ON c.course_id = se.course_id
+postgres-# GROUP BY c.course_name
+postgres-# ORDER BY enrolled_students_count DESC;
+      course_name      | enrolled_students_count 
+-----------------------+-------------------------
+ Database Fundamentals |                       3
+ Discrete Math         |                       1
+ Web Development       |                       1
+ Calculus I            |                       1
+ Ethics in Tech        |                       1
+(5 rows)
+
+postgres=# SELECT
+postgres-# c.course_name,
+postgres-# COUNT(se.student_id) AS enrolled_students_count
+postgres-# FROM courses c
+postgres-# JOIN student_enrollments se ON c.course_id = se.course_id
+postgres-# GROUP BY c.course_name
+postgres-# HAVING COUNT(se.student_id) > 1;
+      course_name      | enrolled_students_count 
+-----------------------+-------------------------
+ Database Fundamentals |                       3
+(1 row)
+
+postgres=# \q
