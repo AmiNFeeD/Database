@@ -1,0 +1,77 @@
+anfd@ANFD-Pro lab15 % psql -U anfd -d postgres
+psql (14.19 (Homebrew))
+Type "help" for help.
+
+postgres=# \copy students TO 'students_backup.csv' WITH (FORMAT CSV, HEADER); 
+COPY 5
+postgres=# exit
+anfd@ANFD-Pro lab15 % cat students_backup.csv
+
+student_id,first_name,last_name,email
+1,Aizhan,Bekova,aizhan@mail.com
+2,Daniyar,Askarov,daniyar@mail.com
+3,Tilek,Usonov,tilek@mail.com
+4,Gulnur,Zhorobekova,gulnur@mail.com
+5,Rustam,Sydykov,rustam@mail.com
+anfd@ANFD-Pro lab15 % echo "first_name,last_name,email" > new_students.csv
+
+anfd@ANFD-Pro lab15 % echo "Tilek,Usubaliev,tilek@mail.com" >> new_students.csv
+
+anfd@ANFD-Pro lab15 % echo "Meerim,Bekova,meerim@mail.com" >> new_students.csv
+
+anfd@ANFD-Pro lab15 % psql -U anfd -d postgres                            
+psql (14.19 (Homebrew))
+Type "help" for help.
+
+postgres=# TRUNCATE TABLE students RESTART IDENTITY CASCADE;
+NOTICE:  truncate cascades to table "student_enrollments"
+TRUNCATE TABLE
+postgres=# \copy students (first_name, last_name, email) FROM 'new_students.csv' WITH (FORMAT CSV, HEADER);
+COPY 2
+postgres=# SELECT * FROM students;
+ student_id | first_name | last_name |      email      
+------------+------------+-----------+-----------------
+          1 | Tilek      | Usubaliev | tilek@mail.com
+          2 | Meerim     | Bekova    | meerim@mail.com
+(2 rows)
+
+postgres=# \q
+anfd@ANFD-Pro lab15 % pg_dump -U anfd -d postgres -Fc > postgres_full_backup.dump
+anfd@ANFD-Pro lab15 % ls -lh postgres_full_backup.dump
+-rw-r--r--  1 anfd  staff    11K Oct 14 13:42 postgres_full_backup.dump
+anfd@ANFD-Pro lab15 % createdb -U anfd postgres_restored
+anfd@ANFD-Pro lab15 % pg_restore -U anfd -d postgres_restored -v postgres_full_backup.dump
+pg_restore: connecting to database for restore
+pg_restore: creating TABLE "public.accounts"
+pg_restore: creating SEQUENCE "public.accounts_account_id_seq"
+pg_restore: creating SEQUENCE OWNED BY "public.accounts_account_id_seq"
+pg_restore: creating TABLE "public.courses"
+pg_restore: creating SEQUENCE "public.courses_course_id_seq"
+pg_restore: creating SEQUENCE OWNED BY "public.courses_course_id_seq"
+pg_restore: creating TABLE "public.student_enrollments"
+pg_restore: creating SEQUENCE "public.student_enrollments_enrollment_id_seq"
+pg_restore: creating SEQUENCE OWNED BY "public.student_enrollments_enrollment_id_seq"
+pg_restore: creating TABLE "public.students"
+pg_restore: creating SEQUENCE "public.students_student_id_seq"
+pg_restore: creating SEQUENCE OWNED BY "public.students_student_id_seq"
+pg_restore: creating DEFAULT "public.accounts account_id"
+pg_restore: creating DEFAULT "public.courses course_id"
+pg_restore: creating DEFAULT "public.student_enrollments enrollment_id"
+pg_restore: creating DEFAULT "public.students student_id"
+pg_restore: processing data for table "public.accounts"
+pg_restore: processing data for table "public.courses"
+pg_restore: processing data for table "public.student_enrollments"
+pg_restore: processing data for table "public.students"
+pg_restore: executing SEQUENCE SET accounts_account_id_seq
+pg_restore: executing SEQUENCE SET courses_course_id_seq
+pg_restore: executing SEQUENCE SET student_enrollments_enrollment_id_seq
+pg_restore: executing SEQUENCE SET students_student_id_seq
+pg_restore: creating CONSTRAINT "public.accounts accounts_pkey"
+pg_restore: creating CONSTRAINT "public.courses courses_pkey"
+pg_restore: creating CONSTRAINT "public.student_enrollments student_enrollments_pkey"
+pg_restore: creating CONSTRAINT "public.students students_email_key"
+pg_restore: creating CONSTRAINT "public.students students_pkey"
+pg_restore: creating FK CONSTRAINT "public.student_enrollments student_enrollments_course_id_fkey"
+pg_restore: creating FK CONSTRAINT "public.student_enrollments student_enrollments_student_id_fkey"
+pg_restore: creating ACL "SCHEMA public"
+anfd@ANFD-Pro lab15 % 
